@@ -3,13 +3,16 @@ roles:
   proxy:
     provisioners:
       - type: file
+        source: 'data/puppet_debugging_kit/files/resolv.conf'
+        destination: '/tmp/resolv.conf'
+      - type: file
         source: 'data/puppet_debugging_kit/files/squid.conf'
         destination: '/tmp/squid.conf'
       - type: shell
         inline: |
-          sudo bash -c '/bin/echo "nameserver 8.8.8.8" > /etc/resolv.conf'
+          sudo mv /tmp/resolv.conf /etc/resolv.conf
           sudo rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
-          sudo yum install -y puppet-agent
+          sudo yum install -y puppet-agent --nogpgcheck
           sudo /opt/puppetlabs/bin/puppet module install thias-squid3
           sudo /opt/puppetlabs/bin/puppet apply -e "class {'::squid3': template => 'short', access_log => ['/var/log/squid/access.log'], cache_store_log => '/var/log/squid/store.log'}"
           sudo mv /tmp/squid.conf /etc/squid/squid.conf
