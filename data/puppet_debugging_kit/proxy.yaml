@@ -1,0 +1,33 @@
+---
+roles:
+  proxy:
+    provisioners:
+      - type: file
+        source: 'data/puppet_debugging_kit/files/squid.conf'
+        destination: '/tmp/squid.conf'
+      - type: shell
+        inline: |
+          sudo bash -c '/bin/echo "nameserver 8.8.8.8" > /etc/resolv.conf'
+          sudo rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
+          sudo yum install -y puppet-agent
+          sudo /opt/puppetlabs/bin/puppet module install thias-squid3
+          sudo /opt/puppetlabs/bin/puppet apply -e "class {'::squid3': template => 'short', access_log => ['/var/log/squid/access.log'], cache_store_log => '/var/log/squid/store.log'}"
+          sudo mv /tmp/squid.conf /etc/squid/squid.conf
+          sudo squid restart
+
+  kill-internet:
+    provisioners:
+      - type: shell
+        inline: |
+          sudo service iptables start
+          sudo iptables -I OUTPUT -d 127.0.0.1     -j ACCEPT
+          sudo iptables -I OUTPUT -d 10.0.0.0/8     -j ACCEPT
+          sudo iptables -I OUTPUT -d 192.168.0.0/16 -j ACCEPT
+          sudo iptables -I OUTPUT -d 172.16.0.0/12  -j ACCEPT
+          sudo iptables -A OUTPUT -j REJECT
+          sudo iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited
+          sudo bash -c "iptables-save > /etc/sysconfig/iptables"
+
+  pe-master:
+    provisioners:
+      - type: pe_bootstrap

@@ -1,7 +1,10 @@
 # Puppet Debugging Kit
 _The only good bug is a dead bug._
 
-This project provides a batteries-included Vagrant environment for debugging Puppet powered infrastructures.
+This project provides a batteries-included Vagrant environment for debugging Puppet powered infrastructures.  
+
+This iteration of the puppet debug kit sets up a squid proxy server and a PE mono install without access to the internet.  Enjoy the experience of getting "proxy:3128" in all
+the right places to make PE function correctly.
 
 
 ## Setup
@@ -55,6 +58,8 @@ Use of the debugging kit consists of:
     Most VMs start with the `base` role which auto-assigns an IP address and sets up network connectivity.
     The default roles can be found in [`data/puppet_debugging_kit/roles.yaml`](https://github.com/puppetlabs/puppet-debugging-kit/blob/internal/data/puppet_debugging_kit/roles.yaml) and are explained in more detail below.
 
+  - The `pe-master` role is needed to install PE at the correct phase of installation.  Make sure it is listed below `kill-internet`, or risk running into https://tickets.puppetlabs.com/browse/PE-13905.
+
 
 ### PE Specific Roles
 
@@ -72,6 +77,9 @@ There are three roles that assist with creating PE machines:
   - `pe-<version>-agent`:
     This role performs an agent installation of PE `<version>` on the guest VM.
     The agent is configured to contact a master running at `pe-<version>-master.puppetdebug.vlan` --- so ensure a VM with that hostname is configured and running before bringing up any agents.
+
+  - `kill-internet`:
+    Adds iptables rules to disable outbound access to anything but local IP addresses.
 
 
 ### POSS Specific Roles
