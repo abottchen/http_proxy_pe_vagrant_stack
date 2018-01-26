@@ -7,3 +7,6 @@ Gemfile.lock
 bin
 config/*.yaml
 src/puppetlabs
+vsc.rb
+list.rb
+ips.sh

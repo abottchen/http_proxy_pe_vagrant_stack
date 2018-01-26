@@ -10,6 +10,8 @@ roles:
         destination: '/tmp/squid.conf'
       - type: shell
         inline: |
+          sudo setenforce 0
+          sudo sed -ie "s/enforcing/disabled/" /etc/sysconfig/selinux
           sudo mv /tmp/resolv.conf /etc/resolv.conf
           sudo rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
           sudo yum install -y puppet-agent --nogpgcheck
