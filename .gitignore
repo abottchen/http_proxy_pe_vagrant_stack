@@ -5,7 +5,7 @@
 Gemfile.local
 Gemfile.lock
 bin
-config/*.yaml
+config/openstack.yaml
 src/puppetlabs
 vsc.rb
 list.rb

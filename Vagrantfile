@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+Vagrant::DEFAULT_SERVER_URL.replace('https://vagrantcloud.com')
+
 vagrant_dir = File.dirname(__FILE__)
 # The chdir ensures all relative paths expand consistently no matter where
 # the vagrant command is run from.

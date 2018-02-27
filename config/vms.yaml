@@ -1,0 +1,42 @@
+---
+# Keep the default Vagrant SSH key. It's publicly available and thus
+# "insecure", but these VMs aren't for production use and having a well-known
+# key allows for easy automation and documentation.
+ssh:
+  insert_key: false
+
+vms:
+
+  - name: pe-201734-cm
+    debug-kit: false
+    box: puppetlabs/centos-6.6-64-nocm
+    roles:
+      - kill-internet
+      - pe-forward-console
+      - pe-memory-tuning2
+      - el-fix-path
+      - medium-size
+      - base
+
+  - name: pe-201732-master
+    debug-kit: true
+    box: puppetlabs/centos-6.6-64-nocm
+    roles:
+      - kill-internet
+      - pe-master
+      - pe-forward-console
+      - pe-memory-tuning2
+      - el-fix-path
+      - medium-size
+      - base
+
+  - name: proxy
+    debug-kit: false
+    box: puppetlabs/centos-6.6-64-nocm
+    roles:
+      - proxy
+      - el-stop-firewall
+      - el-fix-path
+      - base
+
+# vim: set ft=yaml:
